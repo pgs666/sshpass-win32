@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -21,7 +21,7 @@ jobs:
             artifact: windows-arm64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Show CMake version
         run: cmake --version
@@ -40,14 +40,14 @@ jobs:
           Copy-Item "build/${{ matrix.arch }}/Release/sshpass.exe" "$out/sshpass-${{ matrix.artifact }}.exe"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sshpass-${{ matrix.artifact }}
           path: dist/${{ matrix.artifact }}/sshpass-${{ matrix.artifact }}.exe
           if-no-files-found: error
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: dist/${{ matrix.artifact }}/sshpass-${{ matrix.artifact }}.exe
